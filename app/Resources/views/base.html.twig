@@ -1,0 +1,48 @@
+	
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Quizz'Friend - LP Metinet 2013{% endblock %}</title>
+        {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/metinetfacebook/css/bootstrap.css') }}" />
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        <div id="fb-root"></div>
+            {% block body %}{% endblock %}
+
+            {% block javascripts %}
+        <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/jquery.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/jquery_migrate.js') }}"></script>
+        <script type="text/javascript">
+
+            window.fbAsyncInit = function() {
+                // init the FB JS SDK
+                FB.init({
+                appId      : '{{ app_id }}',
+                channelUrl : '//{{ url_intern }}/channel.php',
+                status     : true,
+                xfbml      : true
+                });
+                FB.Canvas.setAutoGrow();
+            };
+
+            // Load the SDK asynchronously
+            (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+            </script>
+            {% endblock %}
+            
+            
+        </body>
+    </html>
+

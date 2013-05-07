@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- Facebook Listener Class -->
+        <parameter key="metinet.fblistener.class">Metinet\Bundle\FacebookBundle\EventListener\FacebookSecurityListener</parameter>
+
+        <!-- Manager -->
+        <parameter key="metinet.manager.fbuser.class">Metinet\Bundle\FacebookBundle\Manager\FbUserManager</parameter>
+        <parameter key="metinet.manager.fbuser.entity">MetinetFacebookBundle:User</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="metinet.fblistener" class="%metinet.fblistener.class%">
+            <argument type="service" id="service_container" />
+        </service>
+
+        <!-- Facebook Listeners -->
+        <service id="metinet.security.facebook.listener" class="%metinet.fblistener.class%">
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="-255" />
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
+            <argument type="service" id="service_container" />
+        </service>
+
+        <!-- Manager -->
+        <service id="metinet.manager.fbuser" class="%metinet.manager.fbuser.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="fos_facebook.api"/>
+        </service>
+
+    </services>
+</container>
