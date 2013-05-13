@@ -1,0 +1,23 @@
+{% extends "::base.html.twig" %}
+{% block title %}Identification ‐ Friend'Quizz{% endblock %}
+{% block body %}
+	<h3>S'identifier</h3>
+	{% if error %}
+		<div class="errors">{{ error.message }}</div>
+	{% endif %}
+
+	<form action="{{ path('login_check') }}" method="post">
+		<p>
+			<label for="usernameInput">Login</label>
+			<input type="text" name="_username" id="usernameInput" value="{{ last_username }}" />
+		</p>
+		<p>
+			<label for="passwordInput">Password</label>
+			<input type="password" name="_password" id="passwordInput" />
+		</p>
+		<p style="text‐align: center;">
+			<input class="btn btn-primary" type="submit" value="S'identifier" /> ‐ <a class="btn btn-small" href="#">Créer un compte</a>
+		</p>
+			
+	</form>
+{% endblock %}
