@@ -1,0 +1,25 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+<div class="container">
+	<div class="row-fluid well">
+		<div class="span6 offset3">
+			
+			<ul>
+    {% for th in arrayTheme %}
+        <li> <a href="{{ path('adminchoixduquizzcorrespondant', {'theme': th.title, 'id': th.id }) }}" >{{ th.title }}</a> </li>
+    {% else %}
+        <li> Aucune catégorie de quizz !</li>
+    {% endfor %}
+</ul>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+{% endblock %}

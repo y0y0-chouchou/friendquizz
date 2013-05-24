@@ -1,0 +1,17 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+<h1>Page des classements</h1>
+
+<ul>
+    <li><a href="{{ path('classementgeneral') }}">Classement général de tous les utilisateurs</a></li>
+    <li><a href="{{ path('classementtop10') }}">Classement Top 10 de tous les utilisateurs</a></li>
+    <li><a href="{{ path('classementdifference') }}">Votre position +5/-5 de tous les utilisateurs</a></li>
+    <li><a href="{{ path('classementgeneralamis') }}">Votre position entre vos amis</a></li>
+    <li><a href="{{ path('classementdifferenceamis') }}">Votre position +2/-2 entre vos amis</a></li>
+</ul>
+        
+<div style="margin-top:700px;"></div>
+
+{% endblock %}

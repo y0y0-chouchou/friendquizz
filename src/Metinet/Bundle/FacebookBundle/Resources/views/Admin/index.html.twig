@@ -1,9 +1,180 @@
 {% extends "::base.html.twig" %}
-{% block title %}Friend'Quizz{% endblock %}
 {% block body %}
 
-	<h3>DashBoard</h3>
 
-	<a href="{{ path('logout') }}">Deconnexion</a>
+<hr style="visibility:hidden;">
+
+<div class="container">
+  <div class="row-fluid">
+
+    <div class="span12">
+
+      <div class="well">
+        <center><h3>Récapitulatif</h3></center>
+        <div class="row">
+              
+              <div class="span6 offset3">
+                <center>
+                  <div class="alert alert-info">
+
+                    <ul>
+                        <li>Nombre de joueurs {{ nbUsers }}</li>
+                        <li>Nombre de quizz disponibles {{ nbQuizzs }}</li>
+                        <li>Score moyen des joueurs {{ scoreMoyen }}</li>
+                        <li>Nombre de quizz lancés par les joueurs {{ quizzLances }} </li>
+                    </ul>
+
+                  </div>
+                </center>
+              </div>
+                
+
+          </div>
+
+
+          <div class="row">
+            <div class="span3 offset2">
+                    <div class="btn-group">
+                      <button class="btn btn-large btn-success">Top Quizz's</button>
+                      <button class="btn btn-large btn-success dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                      </button>
+
+                      <ul class="dropdown-menu">
+                        <li><a href="quizz/detailquizz/{{ arrayTopQuizz[0] }}">{{ arrayTopQuizz[6] }}</a></li>
+                        <li><a href="quizz/detailquizz/{{ arrayTopQuizz[2] }}">{{ arrayTopQuizz[7] }}</a></li>
+                        <li><a href="quizz/detailquizz/{{ arrayTopQuizz[4] }}">{{ arrayTopQuizz[8] }}</a></li>
+                      </ul>
+                    </div>
+            </div>
+            <div class="span3 offset2">
+                    <div class="btn-group">
+                      <button class="btn btn-large btn-danger">Bad Quizz's</button>
+                      <button class="btn btn-large btn-danger dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                      </button>
+
+                      <ul class="dropdown-menu">
+                        <li><a href="quizz/detailquizz/{{ arrayBadQuizz[0] }}">{{ arrayBadQuizz[6] }}</a></li>
+                        <li><a href="quizz/detailquizz/{{ arrayBadQuizz[2] }}">{{ arrayBadQuizz[7] }}</a></li>
+                        <li><a href="quizz/detailquizz/{{ arrayBadQuizz[4] }}">{{ arrayBadQuizz[8] }}</a></li>
+                      </ul>
+
+                    </div>
+       
+              </div>
+            </div>
+
+
+
+      </div>
+
+      <hr style="visibility:hidden;">
+
+        
+
+        <div class="row-fluid well">
+          <center><h3>Les 10 derniers joueurs</h3></center>
+
+          <div class="span6 offset3">
+
+            </ul>
+              {% for u in users%}
+                  <li>
+                    Crée le {{ u.createdAt|date('Y-m-d H:i:s') }} 
+                    <img src="{{ u.picture }}" alt="Image de l'utilisateur {{ u.firstname }}" /> 
+                    <a href="http://www.facebook.com/{{ u.username }}" title="{{ u.firstname }} {{ u.lastname }}">
+                      {{ u.firstname }} {{ u.lastname }}
+                    </a>
+                  </li>
+              {% else %}
+                  <li>Aucun utilisateurs.</li>
+              {% endfor %}
+            <ul>
+
+          </div>
+          
+        </div>
+
+
+
+        <hr style="visibility:hidden;">
+        <div id="chart_div2" style=" height: 500px;"></div><!-- Informations sur le nombre de joueurs -->
+        <hr style="visibility:hidden;">
+        <div id="chart_div3" style=" height: 500px;"></div><!-- Informations sur les bad 3 des quizz -->
+        <hr style="visibility:hidden;">
+        <div id="chart_div" style="height: 500px;"></div><!-- Informations sur les top 3 des quizz -->
+        <hr style="visibility:hidden;">
+
+
+    </div>
+  </div>
+</div>
+
+        
+
+        
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['{{ arrayTopQuizz[6] }}',     {{ arrayTopQuizz[1] }}],
+          ['{{ arrayTopQuizz[7] }}',     {{ arrayTopQuizz[3] }}],
+          ['{{ arrayTopQuizz[8] }}',     {{ arrayTopQuizz[5] }}]
+        ]);
+
+        var options = {
+          title: 'TOP 3 des quizz les plus populaires'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    
+        <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['{{ arrayBadQuizz[6] }}',     {{ arrayBadQuizz[1] }}],
+          ['{{ arrayBadQuizz[7] }}',     {{ arrayBadQuizz[3] }}],
+          ['{{ arrayBadQuizz[8] }}',     {{ arrayBadQuizz[5] }}]
+        ]);
+
+        var options = {
+          title: 'TOP 3 des quizz les moins utilisés'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div3'));
+        chart.draw(data, options);
+      }
+    </script>
+
+       <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Temps', 'Nombres'],
+          ['Total',  {{ nbUsers }}],
+          ['7 derniers jours',  {{ nbUsers7lastDays }}],
+          ['30 derniers jours',  {{ nbUsers30lastDays }}],
+        ]);
+
+        var options = {
+          title: 'Nombres utilsateurs',
+          vAxis: {title: 'Temps',  titleTextStyle: {color: 'red'}}
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div2'));
+        chart.draw(data, options);
+      }
+    </script>
 
 {% endblock %}

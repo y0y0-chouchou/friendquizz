@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+<div class="container">
+	<div class="row-fluid well">
+		<div class="span6 offset3">
+			
+<h1>Modifier un quizz</h1>
+
+<ul>
+    {% for quiz in quizzs %}
+        <li> <a href="updatequizz/{{ quiz.id }}" >{{ quiz.title }}</a> </li>
+    {% else %}
+        <li> Aucun quizzs !</li>
+    {% endfor %}
+</ul>
+
+		</div>
+	</div>
+</div>
+
+
+
+        
+{% endblock %}

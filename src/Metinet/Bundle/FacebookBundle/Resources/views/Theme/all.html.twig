@@ -1,0 +1,42 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+<hr style="visibility: hidden;">
+
+<div class="container">
+    <div class="row">
+        <center><h1>Choississez un thème</h1></center><br>
+
+        <div class="span12">
+        {% for i,them in themes %}
+
+            
+                <div class="span5 pull-right well">
+                    <center>
+
+                        <h1 >{{ them.title }}</h1>
+                        <h4>{{ them.shortDesc }}</h4>
+                        <p>Nombre de quizzs disponibles: <strong>{{ nombredeQuizz[i] }}</strong></p>
+                        <img src="{{ asset(them.picture) }}" alt="Image du thème {{ them.title }}" width="200px" height="200px" /> <br><br>
+                        
+
+                        <a class="btn btn-primary btn-large" href="{{ path('choixduquizzcorrespondant', {'theme': them.title, 'id': them.id }) }}">{{them.title}} Quizz's</a>
+
+                    </center>
+                </div>
+            
+            
+
+        {% else %}
+           Aucun thèmes !
+        {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+
+        
+{% endblock %}

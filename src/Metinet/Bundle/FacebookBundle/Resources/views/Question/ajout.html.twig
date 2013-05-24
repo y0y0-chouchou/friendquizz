@@ -1,0 +1,26 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+<div class="container">
+	<div class="row-fluid well">
+		<div class="span6 offset3">
+			
+			<h1>Ajouter une question</h1>
+        
+<form method="post"  {{ form_enctype(form) }}>
+{{ form_widget(form) }}
+<input type="submit" />
+</form>
+
+<a href="{{ path('adminQuestions') }}">Retour</a>
+<div style="margin-top:600px;"></div>
+
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}

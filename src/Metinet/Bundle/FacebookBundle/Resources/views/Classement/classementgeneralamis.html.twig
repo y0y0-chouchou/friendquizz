@@ -1,0 +1,247 @@
+{% extends '::base.html.twig' %}
+{% block head %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/metinetfacebook/css/ami.css') }}" />
+{% endblock %}
+{% endblock %}
+{% block body %}
+
+<p>Votre position {{ position }} sur {{ nbUser }}</p>
+
+
+
+        <div id="chart_div4" style="width: 1400px; height: 500px;"></div>
+        
+        
+        <input type="button" value="Partager mon classement" onclick="javascript:partageClassement()" />
+        
+        
+<p>Choisir un ami à défier sur le classement général</p> 
+<ul id="items">
+ {% for f in MyFriends.data %}
+   <li> 
+        <img src="https://graph.facebook.com/{{ f.id }}/picture" alt="{{ f.name }}" title="{{ f.name }}" />
+        <p><a href="javascript:defierAmis({{ f.id }})">{{ f.name }}</a></p>
+     </li>
+ {% endfor %} 
+</ul>        
+
+<br/>
+        <a href="{{ path('indexClassement') }}">Retour</a>
+
+
+   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+   
+   <script>
+   
+   
+(function($) {
+		  
+	$.fn.easyPaginate = function(options){
+
+		var defaults = {				
+			step: 6,
+			delay: 100,
+			numeric: true,
+			nextprev: true,
+			auto:false,
+			loop:false,
+			pause:4000,
+			clickstop:true,
+			controls: 'pagination',
+			current: 'current',
+			randomstart: false
+		}; 
+		
+		var options = $.extend(defaults, options); 
+		var step = options.step;
+		var lower, upper;
+		var children = $(this).children();
+		var count = children.length;
+		var obj, next, prev;		
+		var pages = Math.floor(count/step);
+		var page = (options.randomstart) ? Math.floor(Math.random()*pages)+1 : 1;
+		var timeout;
+		var clicked = false;
+		
+		function show(){
+			clearTimeout(timeout);
+			lower = ((page-1) * step);
+			upper = lower+step;
+			$(children).each(function(i){
+				var child = $(this);
+				child.hide();
+				if(i>=lower && i<upper){ setTimeout(function(){ child.fadeIn('fast') }, ( i-( Math.floor(i/step) * step) )*options.delay ); }
+				if(options.nextprev){
+					if(upper >= count) { next.fadeOut('fast'); } else { next.fadeIn('fast'); };
+					if(lower >= 1) { prev.fadeIn('fast'); } else { prev.fadeOut('fast'); };
+				};
+			});	
+			$('li','#'+ options.controls).removeClass(options.current);
+			$('li[data-index="'+page+'"]','#'+ options.controls).addClass(options.current);
+			
+			if(options.auto){
+				if(options.clickstop && clicked){}else{ timeout = setTimeout(auto,options.pause); };
+			};
+		};
+		
+		function auto(){
+			if(options.loop) if(upper >= count){ page=0; show(); }
+			if(upper < count){ page++; show(); }				
+		};
+		
+		this.each(function(){ 
+			
+			obj = this;
+			
+			if(count>step){
+								
+				if((count/step) > pages) pages++;
+				
+				var ol = $('<ol id="'+ options.controls +'"></ol>').insertAfter(obj);
+				
+				if(options.nextprev){
+					prev = $('<li class="prev">Précédent</li>')
+						.hide()
+						.appendTo(ol)
+						.click(function(){
+							clicked = true;
+							page--;
+							show();
+						});
+				};
+				
+				if(options.numeric){
+					for(var i=1;i<=pages;i++){
+					$('<li data-index="'+ i +'">'+ i +'</li>')
+						.appendTo(ol)
+						.click(function(){	
+							clicked = true;
+							page = $(this).attr('data-index');
+							show();
+						});					
+					};				
+				};
+				
+				if(options.nextprev){
+					next = $('<li class="next">Suivant</li>')
+						.hide()
+						.appendTo(ol)
+						.click(function(){
+							clicked = true;			
+							page++;
+							show();
+						});
+				};
+			
+				show();
+			};
+		});	
+		
+	};	
+
+})(jQuery);
+       
+   </script>
+   
+	<script type="text/javascript">
+	
+jQuery(function($){
+	
+	$('ul#items').easyPaginate({
+		step:6
+	});
+	
+});    
+    
+    </script>
+    
+<script type="text/javascript">
+            function partageClassement(){
+               FB.ui(
+                        {
+                        method: 'feed',
+                        name: 'Mon classement général entre mes amis sur friendQuizz',
+                        link: 'http://apps.facebook.com/friendquizz/classement/classementgeneral',
+                        picture: 'http://a51.idata.over-blog.com/3/39/28/59/graphG.jpg',
+                        caption: 'Mom nombre de points total est de {{ nombrePoints }}',
+                        description: 'Mon classement général entre amis sur friendQuizz {{ position }} sur {{ nbUser }}',
+                        to: {{ fbUid }},
+                        },
+                        function(response) {
+                        if (response && response.post_id) {
+                        alert('Votre message a bien été publié sur votre mur.');
+                        } else {
+                        alert('Erreur: Le message n’a pas été publié sur votre mur.');
+                        }
+                        }
+                        );}
+                        
+                        
+                    function defierAmis(id){
+               FB.ui(
+                        {
+                        method: 'feed',
+                        name: 'Je te lance un défi sur le classement général entre amis sur FriendQuizz',
+                        link: 'http://apps.facebook.com/friendquizz/classement/classementgeneralamis',
+                        picture: 'http://a51.idata.over-blog.com/3/39/28/59/graphG.jpg',
+                        caption: 'Mom nombre de points total est de {{ nombrePoints }}',
+                        description: 'Mon classement général entre amis sur friendQuizz {{ position }} sur {{ nbUser }}',
+                        to: id,
+                        },
+                        function(response) {
+                        if (response && response.post_id) {
+                        alert('Votre message a bien été publié sur le mur de votre ami.');
+                        } else {
+                        alert('Erreur: Le message n’a pas été publié sur le mur de votre ami.');
+                        }
+                        }
+                        );}             
+                        
+        </script>
+        
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>    
+<script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+          
+          var t = 
+          [['Utilisateurs', 'Nombres de points'],
+          
+          {% for i,user in classementGeneral %}
+                      
+             {% if userIdenCour == user.id %}
+                 
+              ['Votre position',  {{ user.points }} ],
+                 
+             {% else %}    
+                 
+                    ['{{ user.lastname }} {{ user.firstname }}',{{ user.points }} ],
+                    
+            {% endif %}
+          
+          
+          {% endfor %}
+      
+          ] ;
+          
+        var data = google.visualization.arrayToDataTable( t );
+
+        var options = {
+          title: 'Classement général entre vos amis',
+          hAxis: {title: 'Utilisateurs',  titleTextStyle: {color: 'red'}},
+          vAxis: {title: 'Nombre de points',  titleTextStyle: {color: 'red'}},
+           pointSize: 5
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div4'));
+        chart.draw(data, options);
+      }
+      
+          </script>
+      
+
+{% endblock %}
+          
+          

@@ -1,0 +1,33 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+<div class="container">
+	<div class="row-fluid well">
+		<div class="span8 offset2">
+			
+			<h1>{{ rappelTheme.title}}</h1>
+
+<img alt="Image du quizz {{ rappelTheme.title }}" height="200px" width="300px" src={{ asset(rappelTheme.picture)}} >
+
+<h3>{{ rappelTheme.longDesc }}</h3>
+<p>{{ rappelTheme.shortDesc }}</p>
+
+<p>Nombre de quizz disponible pour le thème {{ rappelTheme.title}} {{ nombreDeQuizz }}</p>
+
+<ul>
+    {% for quiz in quizz %}
+        <li> <a href="{{ path('detailquizz', { 'id' : quiz.id }) }}}" >{{ quiz.title }}</a> Crée le {{ quiz.createdAt|date('Y-m-d H:i:s') }}</li>
+    {% else %}
+        <li> Aucun quizzs de disponibles pour ce thème!</li>
+    {% endfor %}
+</ul>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+{% endblock %}

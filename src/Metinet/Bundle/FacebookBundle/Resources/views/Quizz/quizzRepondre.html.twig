@@ -1,0 +1,142 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+<hr style="visibility: hidden">
+<div class="container">
+  
+
+<div class="row-fluid">
+
+
+  	<div class="span12  header_quizz">
+
+          <div class="span8 offset2 well">
+            <center><h1><img width="200px;" src="{{ asset(image) }}" alt="">  {{ quizz.title }}</h1></center>
+          </div>
+        		
+
+            
+            <div class="span4 offset4">
+
+              <center>
+                <h1 id="quizz_finish">Quizz terminé !</h1>
+                <br>
+                <div id="timer_test">
+                  <span class="label label-important" id="timer">00 : 00 : 00 </span>
+
+                  
+                  <a href="#" title="Reset" id="reset" class="tog">Reset</a>
+
+                </div>
+                </center> 
+
+            </div>
+  	</div>
+
+<hr>
+
+  <div class="span12 game_quizz">
+
+    
+      <form id="resultat" action="{{ path('resultatQuizz', {'id': quizz.id, 'nb_question': nb_question }) }}" method="post">
+
+          <center>
+            <input type="hidden" id="btn_time" name="btn_time" value="">
+            <button class="btn btn-primary btn-large res" type="submit" name="resultat" value="">Voir vos résultat</button>
+          </center>
+      </form>
+
+    
+    <div class="error_JSON">
+            <center>
+              <div class="alert alert-error"> <h1>Erreur de transmission de données</h1></div>
+            </center>
+          </div>
+    
+    {% for qu in question %}
+      {% set num_quizz = loop.index %}
+
+
+          
+
+      <div class="row-fluid quizz taille_form" id="form_quizz_{{ num_quizz }}" data-quizz-length="{{ loop.length }}">
+
+        <div class="row title_question">
+          <div class="span8 offset2">
+            <center>
+
+               <div class="alert alert-info" >
+                  <p class="titre_quizz" >
+                    <span>
+                      <img class="image_quizz"  src="{{ asset(qu.picture) }}" alt="{{ qu.title }}">
+                    </span>
+                    {{ qu.title }}
+                  </p>
+                </div>
+              <div id="output"></div>
+
+            </center>
+          </div>
+        </div>
+
+         
+         
+         <div class="liste_reponse">
+
+            {% for ans in qu.answer %}
+            {% set num_rep = loop.index  %}
+
+
+            <div class="row">
+              <div class="span4 offset4">
+                
+                 <center class="rep_quizz" data-rep-length="{{ loop.length }}">
+
+                      <form id="quizzForm_{{ num_quizz }}_{{ num_rep }}" action="{{ path('reponse') }}" 
+                     onsubmit="FormRep($(this)); return false;" data-numero="{{ num_quizz }}" method="post">
+
+                          <button class="btn btn-large btn-primary bouton_reponse"  
+                           type="submit" name="id_reponse" id="reponse"  value="{{ ans.id }}" >{{ ans.reponse }}</button>
+
+                      </form>
+
+                </center>
+
+                
+              </div>
+            </div>
+            
+              
+            {% endfor %}
+        </div>
+
+        <hr/>
+        </div>
+
+    
+
+    {% endfor %}
+
+
+
+  </div>
+
+</div>
+
+</div>
+
+   <div style="margin-top:300px;"></div>
+
+	{% block javascripts %}
+
+
+	{{ parent() }}
+
+
+<script src="{{ asset('bundles/metinetfacebook/js/form_validation_quizz.js') }}"></script>
+
+
+	{% endblock %}
+
+{% endblock %}

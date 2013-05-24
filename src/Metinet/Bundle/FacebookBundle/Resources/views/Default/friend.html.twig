@@ -1,0 +1,181 @@
+{% extends '::base.html.twig' %}
+{% block head %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/metinetfacebook/css/ami.css') }}" />
+{% endblock %}
+{% endblock %}
+
+{% block body %}
+<h1>Choisir un ami spécifique</h1>
+<ul id="items">
+ {% for f in friend.data %}
+    <li>    <img src="https://graph.facebook.com/{{ f.id }}/picture" alt="{{ f.name }}" title="{{ f.name }}" />
+        <p><a href="javascript:sendRequestToRecipients({{ f.id }})">{{ f.name }}</a></p>
+     </li>
+ {% else %}
+     <li>Vous ne possédez aucun amis sur facebbok, la loose !</li>
+ {% endfor %}
+ </ul>
+<br/>
+<a href="{{ path('indexInvitation') }}">Retour</a>
+<div style="margin-top:700px;"></div>
+
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+   
+   <script>
+   
+   
+(function($) {
+		  
+	$.fn.easyPaginate = function(options){
+
+		var defaults = {				
+			step: 6,
+			delay: 100,
+			numeric: true,
+			nextprev: true,
+			auto:false,
+			loop:false,
+			pause:4000,
+			clickstop:true,
+			controls: 'pagination',
+			current: 'current',
+			randomstart: false
+		}; 
+		
+		var options = $.extend(defaults, options); 
+		var step = options.step;
+		var lower, upper;
+		var children = $(this).children();
+		var count = children.length;
+		var obj, next, prev;		
+		var pages = Math.floor(count/step);
+		var page = (options.randomstart) ? Math.floor(Math.random()*pages)+1 : 1;
+		var timeout;
+		var clicked = false;
+		
+		function show(){
+			clearTimeout(timeout);
+			lower = ((page-1) * step);
+			upper = lower+step;
+			$(children).each(function(i){
+				var child = $(this);
+				child.hide();
+				if(i>=lower && i<upper){ setTimeout(function(){ child.fadeIn('fast') }, ( i-( Math.floor(i/step) * step) )*options.delay ); }
+				if(options.nextprev){
+					if(upper >= count) { next.fadeOut('fast'); } else { next.fadeIn('fast'); };
+					if(lower >= 1) { prev.fadeIn('fast'); } else { prev.fadeOut('fast'); };
+				};
+			});	
+			$('li','#'+ options.controls).removeClass(options.current);
+			$('li[data-index="'+page+'"]','#'+ options.controls).addClass(options.current);
+			
+			if(options.auto){
+				if(options.clickstop && clicked){}else{ timeout = setTimeout(auto,options.pause); };
+			};
+		};
+		
+		function auto(){
+			if(options.loop) if(upper >= count){ page=0; show(); }
+			if(upper < count){ page++; show(); }				
+		};
+		
+		this.each(function(){ 
+			
+			obj = this;
+			
+			if(count>step){
+								
+				if((count/step) > pages) pages++;
+				
+				var ol = $('<ol id="'+ options.controls +'"></ol>').insertAfter(obj);
+				
+				if(options.nextprev){
+					prev = $('<li class="prev">Précédent</li>')
+						.hide()
+						.appendTo(ol)
+						.click(function(){
+							clicked = true;
+							page--;
+							show();
+						});
+				};
+				
+				if(options.numeric){
+					for(var i=1;i<=pages;i++){
+					$('<li data-index="'+ i +'">'+ i +'</li>')
+						.appendTo(ol)
+						.click(function(){	
+							clicked = true;
+							page = $(this).attr('data-index');
+							show();
+						});					
+					};				
+				};
+				
+				if(options.nextprev){
+					next = $('<li class="next">Suivant</li>')
+						.hide()
+						.appendTo(ol)
+						.click(function(){
+							clicked = true;			
+							page++;
+							show();
+						});
+				};
+			
+				show();
+			};
+		});	
+		
+	};	
+
+})(jQuery);
+       
+   </script>
+   
+	<script type="text/javascript">
+	
+jQuery(function($){
+	
+	$('ul#items').easyPaginate({
+		step:6
+	});
+	
+});    
+    
+    </script>
+
+    <script type="text/javascript">
+        FB.init({
+        appId  : '128312844030823',
+        frictionlessRequests: true
+      });
+      
+        function sendRequestToRecipients(id) {
+        FB.ui({method: 'apprequests',
+        message: 'Viens jouer à QuizzFriend !',
+        to: id
+        }, requestCallback);
+        }
+
+    function requestCallback(response) {
+        
+      }
+</script>
+        
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script type="text/javascript">
+	
+jQuery(function($){
+	
+	$('ul#items').easyPaginate({
+		step:6
+	});
+	
+});    
+    
+    </script>
+
+{% endblock %}

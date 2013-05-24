@@ -6,7 +6,9 @@
 		<div class="errors">{{ error.message }}</div>
 	{% endif %}
 
-	<form action="{{ path('login_check') }}" method="post">
+	<div class="row">
+		<div class="span6 offset6 well">
+			<form action="{{ path('login_check') }}" method="post">
 		<p>
 			<label for="usernameInput">Login</label>
 			<input type="text" name="_username" id="usernameInput" value="{{ last_username }}" />
@@ -20,4 +22,7 @@
 		</p>
 			
 	</form>
+		</div>
+	</div>
+	
 {% endblock %}

@@ -2,6 +2,346 @@
 
 {% block body %}
 
-<h2>Hello </h2>
+
+<hr style="visibility: hidden;">
+
+<div class="container">
+
+
+	<div class="row-fluid well">
+		<div >
+
+      <div class="span12">
+        
+            <center><h2>Bienvenue sur Friend'Quizz  {{ user.firstname }} {{ user.lastname }} </h2></center>
+
+      </div>
+
+        <div class="row">
+          <div class="span4 offset2">
+
+              <center>
+                <img src="https://graph.facebook.com/{{ user.fbUid }}/picture?type=large"/><br> <br>
+                <a href="#myModal" role="button" class="btn btn-large btn-info" data-toggle="modal">Mon classement</a>
+              </center> 
+              
+          </div>
+
+          <div class="span4">
+            <hr style="visibility: hidden;">
+              <p>Nombre de point total: <strong>{{ user.points }}</strong></p>
+              <p>Vous avez répondu à <strong> {{ user.nbquizz }} quizz(s)</strong></p>
+              <p>Pour répondre aux Quizz's, vous le faites en: <strong>{{ user.averagetime }} secondes</strong></p>
+
+
+              <a data-content="{{ QuizzMiEnAvant.shortdesc }}
+                Temps à ne pas dépasser {{ QuizzMiEnAvant.averagetime }} secondes.
+                " 
+
+                title="" data-toggle="popover" class="btn btn-danger" id="best_quizz" 
+                href="{{ path('detailquizz', {'id':QuizzMiEnAvant.id} ) }}" 
+                data-placement="bottom"
+                data-original-title="{{ QuizzMiEnAvant.title }} en {{ QuizzMiEnAvant.winpoints }}  points">
+                Best Quizz du moment
+              </a>
+
+              
+          </div>
+
+        </div>
+        
+    </div>
+  </div>
+
+  <hr style="visibility: hidden;">
+
+
+	<div class="row-fluid well">  
+	        
+          <h3>Nos 4 derniers Quizz</h3>
+
+	        <ul class="thumbails">
+	        {% for q in quizzs %}
+
+              <li class="span3 ">
+                <a class="thumbnail" href="{{ path('detailquizz', {'id':q.id}) }}">
+                  <center><h4>{{ q.title }}</h4></center> 
+                  <img alt="260x180" data-src="holder.js/260x180" style="width: 260px; height: 180px;" src="{{ asset(q.picture)}}">
+                </a>
+              </li>
+
+                
+	        {% else %}
+	                <li>Aucun Quizz's</li>
+	        {% endfor %}
+
+	        </ul>
+	</div>
+
+
+  <hr style="visibility: hidden;">
+
+
+    <div class="row-fluid well">               
+            
+    <h3>Défier Vos Amis !</h3> 
+
+    <ul class="thumbails"  id="items">
+
+     {% for f in MyFriends.data %}
+
+       <li class="span3">
+        <a href="javascript:defierAmis({{ f.id }})">
+          <center> <h5>{{ f.name }}</h5> </center> 
+          <img src="https://graph.facebook.com/{{ f.id }}/picture?type=normal" alt="160x120" data-src="holder.js/160x120" style="width: 160px; height: 120px;"  />
+        </a>
+            
+       </li>
+      
+     {% endfor %} 
+    </ul>     
+
+  </div>
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <center>
+      <h3 id="myModalLabel">Vous êtes {{ position }} sur {{ nbUser }}  </h3> <br>
+      <input class="btn btn-large btn-success" type="button" value="Partager mon classement" onclick="javascript:partageClassement()" />
+    </center>
+
+    
+  </div>
+
+  <div class="modal-body">
+    
+      <div id="chart_div4" style="height: 390px;"></div>   
+            
+      
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
+
+
+
+</div>
+
+
+
+
+{% block javascript %}
+
+
+<script src="{{ asset('bundles/metinetfacebook/js/classement.js') }}"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>    
+<script type="text/javascript">
+
+	$(document).ready(function(){
+
+    
+
+$.fn.easyPaginate = function(options){
+
+    var defaults = {        
+      step: 5,
+      delay: 100,
+      numeric: true,
+      nextprev: true,
+      auto:false,
+      loop:false,
+      pause:4000,
+      clickstop:true,
+      controls: 'pagination',
+      current: 'current',
+      randomstart: false
+    }; 
+    
+    var options = $.extend(defaults, options); 
+    var step = options.step;
+    var lower, upper;
+    var children = $(this).children();
+    var count = children.length;
+    var obj, next, prev;    
+    var pages = Math.floor(count/step);
+    var page = (options.randomstart) ? Math.floor(Math.random()*pages)+1 : 1;
+    var timeout;
+    var clicked = false;
+    
+    function show(){
+      clearTimeout(timeout);
+      lower = ((page-1) * step);
+      upper = lower+step;
+      $(children).each(function(i){
+        var child = $(this);
+        child.hide();
+        if(i>=lower && i<upper){ setTimeout(function(){ child.fadeIn('fast') }, ( i-( Math.floor(i/step) * step) )*options.delay ); }
+        if(options.nextprev){
+          if(upper >= count) { next.fadeOut('fast'); } else { next.fadeIn('fast'); };
+          if(lower >= 1) { prev.fadeIn('fast'); } else { prev.fadeOut('fast'); };
+        };
+      }); 
+      $('li','#'+ options.controls).removeClass(options.current);
+      $('li[data-index="'+page+'"]','#'+ options.controls).addClass(options.current);
+      
+      if(options.auto){
+        if(options.clickstop && clicked){}else{ timeout = setTimeout(auto,options.pause); };
+      };
+    };
+    
+    function auto(){
+      if(options.loop) if(upper >= count){ page=0; show(); }
+      if(upper < count){ page++; show(); }        
+    };
+    
+    this.each(function(){ 
+      
+      obj = this;
+      
+      if(count>step){
+                
+        if((count/step) > pages) pages++;
+        
+        var ol = $('<ol id="'+ options.controls +'"></ol>').insertAfter(obj);
+        
+        if(options.nextprev){
+          prev = $('<li class="prev">Précédent</li>')
+            .hide()
+            .appendTo(ol)
+            .click(function(){
+              clicked = true;
+              page--;
+              show();
+            });
+        };
+        
+        if(options.numeric){
+          for(var i=1;i<=pages;i++){
+          $('<li data-index="'+ i +'">'+ i +'</li>')
+            .appendTo(ol)
+            .click(function(){  
+              clicked = true;
+              page = $(this).attr('data-index');
+              show();
+            });         
+          };        
+        };
+        
+        if(options.nextprev){
+          next = $('<li class="next">Suivant</li>')
+            .hide()
+            .appendTo(ol)
+            .click(function(){
+              clicked = true;     
+              page++;
+              show();
+            });
+        };
+      
+        show();
+      };
+    }); 
+    
+  };  
+
+
+  $('ul#items').easyPaginate({
+    step:5
+  });
+
+  $('#best_quizz').popover('show');
+
+
+
+});
+            
+
+ function partageClassement(){
+               FB.ui(
+                        {
+                        method: 'feed',
+                        name: 'Mon classement général entre mes amis sur friendQuizz',
+                        link: 'http://apps.facebook.com/friendquizz/classement/classementgeneral',
+                        picture: 'http://a51.idata.over-blog.com/3/39/28/59/graphG.jpg',
+                        caption: 'Mom nombre de points total est de {{ nombrePoints }}',
+                        description: 'Mon classement général entre amis sur friendQuizz {{ position }} sur {{ nbUser }}',
+                        to: {{ fbUid }},
+                        },
+                        function(response) {
+                        if (response && response.post_id) {
+                        alert('Votre message a bien été publié sur votre mur.');
+                        } else {
+                        alert('Erreur: Le message n’a pas été publié sur votre mur.');
+                        }
+                        }
+                        );}
+                        
+                        
+                    function defierAmis(id){
+               FB.ui(
+                        {
+                        method: 'feed',
+                        name: 'Je te lance un défi sur le classement général entre amis sur FriendQuizz',
+                        link: 'http://apps.facebook.com/friendquizz/classement/classementgeneralamis',
+                        picture: 'http://a51.idata.over-blog.com/3/39/28/59/graphG.jpg',
+                        caption: 'Mom nombre de points total est de {{ nombrePoints }}',
+                        description: 'Mon classement général entre amis sur friendQuizz {{ position }} sur {{ nbUser }}',
+                        to: id,
+                        },
+                        function(response) {
+                        if (response && response.post_id) {
+                        alert('Votre message a bien été publié sur le mur de votre ami.');
+                        } else {
+                        alert('Erreur: Le message n’a pas été publié sur le mur de votre ami.');
+                        }
+                        }
+                        );}     
+
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+          
+          var t = 
+          [['Utilisateurs', 'Nombres de points'],
+          
+          {% for i,user in classementGeneral %}
+                      
+             {% if userIdenCour == user.id %}
+                 
+              ['Votre position',  {{ user.points }} ],
+                 
+             {% else %}    
+                 
+                    ['{{ user.lastname }} {{ user.firstname }}',{{ user.points }} ],
+                    
+            {% endif %}
+          
+          
+          {% endfor %}
+      
+          ] ;
+          
+        var data = google.visualization.arrayToDataTable( t );
+
+        var options = {
+          title: 'Classement général entre vos amis',
+          hAxis: {title: 'Utilisateurs',  titleTextStyle: {color: 'red'}},
+          vAxis: {title: 'Nombre de points',  titleTextStyle: {color: 'red'}},
+           pointSize: 5
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div4'));
+        chart.draw(data, options);
+      }
+
+</script>
+
+{% endblock %}
+
 
 {% endblock %}

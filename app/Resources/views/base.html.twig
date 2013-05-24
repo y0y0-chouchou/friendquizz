@@ -1,23 +1,28 @@
 	
 
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Quizz'Friend - LP Metinet 2013{% endblock %}</title>
         {% block stylesheets %}
         <link rel="stylesheet" type="text/css" href="{{ asset('bundles/metinetfacebook/css/bootstrap.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/metinetfacebook/css/quizz.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/metinetfacebook/css/ami.css') }}" />
+        <link href='http://fonts.googleapis.com/css?family=Kotta+One' rel='stylesheet' type='text/css'>
         {% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        <div id="fb-root"></div>
-            {% block body %}{% endblock %}
-
-            {% block javascripts %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('bundles/metinetfacebook/images/icone/quizz.png') }}" />
         <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/jquery.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/jquery_migrate.js') }}"></script>
+
+        <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/test.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/bootstrap/bootstrap-dropdown.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/bootstrap/bootstrap-tooltip.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/bootstrap/bootstrap-popover.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/metinetfacebook/js/bootstrap/bootstrap-modal.js') }}"></script>
         <script type="text/javascript">
+
+             
 
             window.fbAsyncInit = function() {
                 // init the FB JS SDK
@@ -35,13 +40,227 @@
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) {return;}
                 js = d.createElement(s); js.id = id;
-                js.src = "//connect.facebook.net/en_US/all.js";
+                js.src = "//connect.facebook.net/fr_FR/all.js";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
 
+
+            FB.init({
+                appId  : '{{ app_id }}',
+                frictionlessRequests: true
+              });
+              
+            function sendRequestViaMultiFriendSelector() {
+                FB.ui({method: 'apprequests',
+                message: "Invite tes amis à jouer à Friend'Quizz !",
+                }, requestCallback);
+                }
+
+            function requestCallback(response) {
+                
+              }
+
             </script>
-            {% endblock %}
+    </head>
+    <body style="  background: url('/bundles/metinetfacebook/images/font/paper.jpg')  ;">
+        <div id="fb-root"></div>
+
+
+
+            <div class="row">
+
+                <div class="navbar navbar-static-top " id="navbar_notadmin">
+                    <div class="navbar-inner">
+                        <div class="container">
+
+                            <a style="margin-top:-30px;" class="brand" href="{{path('home')}}">
+                                 Friend' 
+                                <img style="vertical-align:-10px; max-width: 35px; max-height: 35px;" src="{{ asset('bundles/metinetfacebook/images/icone/quizz.png') }}" alt="">
+                            </a>
+
+                            <div class="span2 offset8">
+
+
+                            <ul class="nav ">
+
+                                <li id="fat-menu" class="dropdown">
+                                    <div class="btn-group">
+                                        <button class="btn btn-info btn-large  dropdown-toggle" data-toggle="dropdown">
+                                        Quizz !
+                                        </button>
+                                        <ul class="dropdown-menu pull-left" aria-labelledby="drop3" role="menu">
+                                            <li class="dropdown-submenu pull-left">
+                                                <a href="#" tabindex="-1">Pour Jouer</a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a href="{{ path('allTheme') }}" tabindex="-1">Choisir un theme</a>
+                                                    </li>
+                                                </ul>
+
+                                            <li class="divider" role="presentation"></li>
+
+                                            <li class="dropdown-submenu pull-left" role="presentation">
+                                                <a href="#" tabindex="-1">Les Classements</a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a href="{{ path('classementgeneral') }}">Tous les utilisateurs</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{ path('classementtop10') }}">Top 10</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{ path('classementdifference') }}">Votre position +5/-5 </a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{ path('classementdifferenceamis') }}">Votre position +2/-2 entre vos amis</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+
+                                            <li class="divider" role="presentation"></li>
+
+                                            <li role="presentation">
+                                                <a href="#" onclick="javascript:sendRequestViaMultiFriendSelector(); return false;" tabindex="-1" role="menuitem">Inviter Vos Amis</a>
+                                            </li>
+
+
+
+                                            </li>
+
+                                        </ul>
+                                    
+                                    
+
+                                
+                                
+                            </ul>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="navbar navbar-inverse navbar-static-top " id="navbar_admin">
+                    <div class="navbar-inner">
+                        <div class="container">
+
+                            <a style="margin-top:-30px;" class="brand" href="{{path('index_admin')}}">
+                                 Friend' 
+                                <img style="vertical-align:-10px; max-width: 35px; max-height: 35px;" src="{{ asset('bundles/metinetfacebook/images/icone/quizz.png') }}" alt="">
+
+                                ADMINISTRATION
+                            </a>
+
+                            <div class="pull-right ">
+                            
+
+                                <ul class="nav ">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                            Gestion du contenu
+                                        <b class="caret"></b>
+                                        </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-submenu " >
+                                            <a href="#">Thèmes</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="{{ path('addTheme') }}">Ajouter</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('upTheme') }}">Modifier</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('suppTheme') }}">Supprimer</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        </li>
+                                        <li class="divider"></li>
+
+                                        <li class="dropdown-submenu pull-left" >
+                                            <a href="#">Quizz</a>
+
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="{{ path('quizzAdd') }}">Ajouter</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('quizzUpdate') }}">Modifier</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('quizzDel') }}">Supprimer</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('quizzState') }}">Activer/Desactiver</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('isPromotedQuizz') }}">Promotion</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('choixthemeduquizz') }}">Choix thème</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li class="dropdown-submenu " >
+                                            <a href="#">Questions</a>
+
+                                            <ul class="dropdown-menu ">
+                                                <li>
+                                                    <a href="{{ path('addQuestion') }}">Ajouter</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li class="dropdown-submenu pull-left" >
+                                            <a href="#">Réponses</a>
+
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="{{ path('ajoutAnswer') }}">Ajouter</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <li class="divider-vertical"></li>
+                                    <li>
+                                        <a class="" href="{{ path('logout') }}">Deconnexion</a>
+                                    </li>
+                                    
+                                    
+                                </ul>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
             
+            
+
+            {% block body %}{% endblock %}
+
+
             
         </body>
     </html>

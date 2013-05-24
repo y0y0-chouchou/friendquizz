@@ -1,14 +1,17 @@
 <?php
 
-namespace Metinet\Bundle\FacebookBundle\Entity;
+    namespace Metinet\Bundle\FacebookBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+    use Doctrine\ORM\Mapping as ORM;
+    use Symfony\Component\Validator\Constraints as Assert;
+    use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Question
  *
  * @ORM\Table(name="question")
  * @ORM\Entity(repositoryClass="Metinet\Bundle\FacebookBundle\Entity\Repository\QuestionRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Question
 {
@@ -32,6 +35,7 @@ class Question
      * @var string
      *
      * @ORM\Column(name="picture", type="string", length=255)
+     * @Assert\File(maxSize="6000000")
      */
     private $picture;
 
@@ -45,6 +49,8 @@ class Question
      * @ORM\OneToMany(targetEntity="Answer", mappedBy="question", cascade={"remove", "persist"})
      */
     protected $answers;
+    
+    protected $path;
 
     /**
      * Constructor
@@ -165,5 +171,92 @@ class Question
     public function getAnswers()
     {
         return $this->answers;
+    }
+    
+    /**
+     * Set path
+     *
+     * @param string $path
+     * @return Theme
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    /**
+     * Get path
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+    
+     public function getAbsolutePath()
+    {
+        return null === $this->path ? null : $this->getUploadRootDir().'/'.$this->path;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->path ? null : $this->getUploadDir().'/'.$this->path;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // le chemin absolu du répertoire où les documents uploadés doivent être sauvegardés
+        return __DIR__.'/../Resources/public/images/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche
+        // le document/image dans la vue.
+        return 'uploads/question/img';
+    }
+    
+     /**
+     * @ORM\PrePersist()
+     */
+    public function preUpload()
+    {
+        if (null !== $this->picture) {
+            // faites ce que vous voulez pour générer un nom unique
+            $this->path = "bundles/metinetfacebook/images/uploads/question/img/".''.sha1(uniqid(mt_rand(), true)).'.'.$this->picture->guessExtension();
+            return $this->path ;
+        }
+    }
+
+    /**
+     * @ORM\PostPersist()
+     */
+    public function upload()
+    {
+        if (null === $this->picture) {
+            return;
+        }
+
+        // s'il y a une erreur lors du déplacement du fichier, une exception
+        // va automatiquement être lancée par la méthode move(). Cela va empêcher
+        // proprement l'entité d'être persistée dans la base de données si
+        // erreur il y a
+        $this->picture->move($this->getUploadRootDir(), $this->path);            
+            
+        unset($this->picture);
+        
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        if ($file = $this->getAbsolutePath()) {
+            unset($file);
+        }
     }
 }

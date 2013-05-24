@@ -1,0 +1,332 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+<hr style="visibility:hidden;" > 
+
+<div class="container">
+	
+	<div class="row-fluid">
+		<div class="span12 well">
+			<center><h1>{{ quizz.title }}</h1></center>	
+			<div class="span4">    
+				<img alt="Image du quizz {{ quizz.title }}" height="200px" width="300px" src={{ asset(quizz.picture)}} >
+			</div>
+
+			<div class="span7">   
+				<h4>{{ quizz.longDesc }}</h4>
+				<p>Nombre de questions disponibles <strong>{{ nombreDeQuestions }}</strong></p>
+				<p>Nombre de points à gagner sur ce quizz <strong>{{ nombreDePointsAGagnerSurLeQuizz }}</strong></p>
+
+				<p>Nombre de participation au quizz <strong>{{ nombreParticipants }}</strong></p>
+				<p>Nombre de points obtenus en moyenne par les utilisateurs <strong>{{ nombreDePointsMoyenDuQuizz }}</strong> </p>
+
+				{% if place >= 1 %}
+				<h4>Places de disponibles dans ce classement top 10 : {{ place }} places</h4>
+				{% endif %}
+
+			</div>
+
+		</div>
+	</div>
+<hr style="visibility:hidden;" > 
+	<div class="row-fluid">
+		<div class="span6 offset3">
+
+			<center>
+			
+				{% if infoQuizzRepondu %}
+				<div class="well">
+					<h4>Vous avez déjà répondu à ce quizz</h4>
+					<p><strong>{{ afficheInfo[5] }}</strong></p>
+
+					<ul>
+					    <li>Nombre de points gagnées <strong>{{ afficheInfo[0] }}</strong></li>
+					    <li>Taux de réussite <strong>{{ afficheInfo[1] }}</strong> %</li>
+					    <li>Temps mis à répondre <strong>{{ afficheInfo[4] }} secondes</strong></li>
+					</ul>
+
+					<input class="btn btn-primary" type="button" value="Partager mon score" onclick="javascript:partageScore()" />
+				</div>
+
+				{% else %}
+
+				    <a class="btn btn-large btn-success" href="{{  path('quizzResultAddDebut', {'id_user': idUser, 'id_quizz': quizz.id }) }}">Commencer à jouer</a>
+
+				{% endif %}
+				</center>
+
+		</div>
+	</div>
+
+<hr style="visibility:hidden;" > 
+
+	<div class="row-fluid">
+
+		<center>
+		<div class="span6 well">
+			<h3>Classement tous utilisateurs Top 10</h3>
+
+				<ul>
+
+				    {% for t in top %}
+				        {% if idUser == t.user.id %}
+				                <li> <a href="http://www.facebook.com/{{ t.user.username }}" >Votre position, {{ t.nombreDePoints }} points</a>  <img src="{{ t.user.picture }}" alt="Image de l'utilisateur {{ t.user.firstname }}" /> </li>
+				        {% else %}
+				                <li> <a href="http://www.facebook.com/{{ t.user.username }}" >{{ t.user.firstname}} {{ t.user.lastname }} ,{{ t.nombreDePoints }} points</a>  <img src="{{ t.user.picture }}" alt="Image de l'utilisateur {{ t.user.firstname }}" /> </li>
+				        {% endif %}
+				    {% else %}
+				        <li> Personne n'a répondu à ce quizz !</li>
+				    {% endfor %}
+				    
+				</ul>
+		</div>
+		<div class="span6 offset well">
+			<h3>Classement parmis vos amis</h3>
+			<ul>
+
+			    {% for t in arrayClassementMyFriend %}
+			          {% if idUser == t.user.id %}
+			                <li> <a href="http://www.facebook.com/{{ t.user.username }}" >Votre position, {{ t.QuizzResult }} points</a>  <img src="{{ t.user.picture }}" alt="Image de l'utilisateur {{ t.user.firstname }}" /> </li>
+			          {% else %}
+			                <li> <a href="http://www.facebook.com/{{ t.user.username }}" >{{ t.user.firstname}} {{ t.user.lastname }}, {{ t.QuizzResult }} points</a>  <img src="{{ t.user.picture }}" alt="Image de l'utilisateur {{ t.user.firstname }}" /> </li>
+			          {% endif %}
+			     {% else %}
+			        <li> Personne de vos amis à répondus à ce quizz !</li>
+			    {% endfor %}
+			    
+			</ul>
+		</div>
+		</center>
+
+
+	</div>
+
+	{% if infoQuizzRepondu %}    
+
+	     <div class="row-fluid well">               
+            
+		    <h3>Défier Vos Amis !</h3> 
+
+		    <ul class="thumbails"  id="items">
+
+		     {% for f in MyFriends.data %}
+
+		       <li class="span3">
+		        <a href="javascript:defierAmis({{ f.id }})">
+		          <center> <h5>{{ f.name }}</h5> </center> 
+		          <img src="https://graph.facebook.com/{{ f.id }}/picture?type=normal" alt="160x120" data-src="holder.js/160x120" style="width: 160px; height: 120px;"  />
+		        </a>
+		            
+		       </li>
+		      
+		     {% endfor %} 
+		    </ul>     
+
+		 </div>
+
+	 {% endif %}
+    
+	<hr style="visibility:hidden;" > 
+
+	<div class="span7 offset2 alert">
+		<div class="fb-like" data-href="http://apps.facebook.com/friendquizz/detailquizz/{{ quizz.id }}" data-send="true" data-width="450" data-show-faces="true" data-font="arial"></div>
+<br/>
+<div class="fb-comments" data-href="http://apps.facebook.com/friendquizz/detailquizz/{{ quizz.id }}" data-width="470" data-num-posts="200"></div>
+<br/>
+<div class="fb-send" data-href="http://apps.facebook.com/friendquizz/detailquizz/{{ quizz.id }}" data-font="arial"></div>
+<br/>
+<div class="fb-facepile" data-href="http://apps.facebook.com/friendquizz/detailquizz/{{ quizz.id }}" data-max-rows="1" data-width="300"></div>
+<br/>
+
+	</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+  
+    
+
+
+    
+   
+   <script>
+   
+   
+(function($) {
+		  
+	$.fn.easyPaginate = function(options){
+
+		var defaults = {				
+			step: 6,
+			delay: 100,
+			numeric: true,
+			nextprev: true,
+			auto:false,
+			loop:false,
+			pause:4000,
+			clickstop:true,
+			controls: 'pagination',
+			current: 'current',
+			randomstart: false
+		}; 
+		
+		var options = $.extend(defaults, options); 
+		var step = options.step;
+		var lower, upper;
+		var children = $(this).children();
+		var count = children.length;
+		var obj, next, prev;		
+		var pages = Math.floor(count/step);
+		var page = (options.randomstart) ? Math.floor(Math.random()*pages)+1 : 1;
+		var timeout;
+		var clicked = false;
+		
+		function show(){
+			clearTimeout(timeout);
+			lower = ((page-1) * step);
+			upper = lower+step;
+			$(children).each(function(i){
+				var child = $(this);
+				child.hide();
+				if(i>=lower && i<upper){ setTimeout(function(){ child.fadeIn('fast') }, ( i-( Math.floor(i/step) * step) )*options.delay ); }
+				if(options.nextprev){
+					if(upper >= count) { next.fadeOut('fast'); } else { next.fadeIn('fast'); };
+					if(lower >= 1) { prev.fadeIn('fast'); } else { prev.fadeOut('fast'); };
+				};
+			});	
+			$('li','#'+ options.controls).removeClass(options.current);
+			$('li[data-index="'+page+'"]','#'+ options.controls).addClass(options.current);
+			
+			if(options.auto){
+				if(options.clickstop && clicked){}else{ timeout = setTimeout(auto,options.pause); };
+			};
+		};
+		
+		function auto(){
+			if(options.loop) if(upper >= count){ page=0; show(); }
+			if(upper < count){ page++; show(); }				
+		};
+		
+		this.each(function(){ 
+			
+			obj = this;
+			
+			if(count>step){
+								
+				if((count/step) > pages) pages++;
+				
+				var ol = $('<ol id="'+ options.controls +'"></ol>').insertAfter(obj);
+				
+				if(options.nextprev){
+					prev = $('<li class="prev">Précédent</li>')
+						.hide()
+						.appendTo(ol)
+						.click(function(){
+							clicked = true;
+							page--;
+							show();
+						});
+				};
+				
+				if(options.numeric){
+					for(var i=1;i<=pages;i++){
+					$('<li data-index="'+ i +'">'+ i +'</li>')
+						.appendTo(ol)
+						.click(function(){	
+							clicked = true;
+							page = $(this).attr('data-index');
+							show();
+						});					
+					};				
+				};
+				
+				if(options.nextprev){
+					next = $('<li class="next">Suivant</li>')
+						.hide()
+						.appendTo(ol)
+						.click(function(){
+							clicked = true;			
+							page++;
+							show();
+						});
+				};
+			
+				show();
+			};
+		});	
+		
+	};	
+
+})(jQuery);
+       
+   </script>
+   
+	<script type="text/javascript">
+	
+jQuery(function($){
+	
+	$('ul#items').easyPaginate({
+		step:6
+	});
+	
+});    
+    
+    </script>
+    
+            <script type="text/javascript">
+            {% if infoQuizzRepondu %}
+
+            function partageScore(){
+               FB.ui(
+                        {
+                        method: 'feed',
+                        name: 'Mon classement sur friendQuizze pour le quizz {{ quizz.title }}',
+                        link: 'http://apps.facebook.com/friendquizzze/classement/classementgeneral',
+                        picture: 'http://a51.idata.over-blog.com/3/39/28/59/graphG.jpg',
+                        caption: 'Mom nombre de points sur ce quizz est de {{ afficheInfo[0] }} avec un taux de réussite de {{ afficheInfo[1] }} %',
+                        description: 'Temps mis à répondre {{ afficheInfo[4] }} secondes',
+                        to: {{ fbUid }},
+                        },
+                        function(response) {
+                        if (response && response.post_id) {
+                        alert('Votre message a bien été publié sur votre mur.');
+                        } else {
+                        alert('Erreur: Le message n’a pas été publié sur votre mur.');
+                        }
+                        }
+                        );}
+
+                    function defierAmis(id){
+               FB.ui(
+                        {
+                        method: 'feed',
+                        name: 'Je te lance un défi sur le quizz {{ quizz.title }}',
+                        link: 'http://apps.facebook.com/friendquizzze/quizz/detailquizz/{{ quizz.id }}',
+                        picture: 'http://a51.idata.over-blog.com/3/39/28/59/graphG.jpg',
+                        caption: 'Mom nombre de points sur ce quizz est de {{ afficheInfo[0] }} avec un taux de réussite de {{ afficheInfo[1] }} %',
+                        description: 'Temps mis à répondre {{ afficheInfo[4] }} secondes',
+                        to: id,
+                        },
+                        function(response) {
+                        if (response && response.post_id) {
+                        alert('Votre message a bien été publié sur le mur de votre ami.');
+                        } else {
+                        alert('Erreur: Le message n’a pas été publié sur le mur de votre ami.');
+                        }
+                        }
+                        );}
+
+{% endif %}
+        </script>
+        
+{% endblock %}

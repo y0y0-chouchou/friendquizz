@@ -1,0 +1,93 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+
+<hr style="visibility: hidden;">
+<div class="container">
+
+  <div class="alert">
+      <center>
+        <h3>Votre position {{ position }} sur {{ nbUser }}</h3><br>
+        <input class="btn btn-large btn-primary" type="button" value="Partager mon classement" onclick="javascript:partageClassement()" />
+      </center>
+  </div>
+  <div id="chart_div4" style="height: 500px;"></div>
+  
+  <hr style="visibility: hidden;">
+                <div style="margin-top:300px;"></div>
+</div>
+
+
+        
+        
+        <br/>
+        
+        <div style="margin-top:300px;"></div>
+
+        <script type="text/javascript">
+            function partageClassement(){
+               FB.ui(
+                        {
+                        method: 'feed',
+                        name: 'Mon classement général entre mes amis sur friendQuizze',
+                        link: 'http://apps.facebook.com/friendquizzze/classement/classementgeneral',
+                        picture: 'http://a51.idata.over-blog.com/3/39/28/59/graphG.jpg',
+                        caption: 'Mom nombre de points total est de {{ nombrePoints }}',
+                        description: 'Mon classement sur friendQuizze {{ position }} sur {{ nbUser }}',
+                        to: {{ fbUid }},
+                        },
+                        function(response) {
+                        if (response && response.post_id) {
+                        alert('Votre message a bien été publié sur votre mur.');
+                        } else {
+                        alert('Erreur: Le message n’a pas été publié sur votre mur.');
+                        }
+                        }
+                        );}
+        </script>
+        
+            <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    
+     <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+          
+          var t = 
+          [['Utilisateurs', 'Nombres de points'],
+          
+          {% for i,user in classementGeneral %}
+                      
+             {% if userIdenCour == user.id %}
+                 
+              ['Votre position',  {{ user.points }} ],
+                 
+             {% else %}    
+                 
+                    ['{{ user.lastname }} {{ user.firstname }}',{{ user.points }} ],
+                    
+            {% endif %}
+          
+          
+          {% endfor %}
+      
+          ] ;
+          
+        var data = google.visualization.arrayToDataTable( t );
+
+        var options = {
+          title: 'Classement général',
+          hAxis: {title: 'Utilisateurs',  titleTextStyle: {color: 'red'}},
+          vAxis: {title: 'Nombre de points',  titleTextStyle: {color: 'red'}},
+           pointSize: 5
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div4'));
+        chart.draw(data, options);
+      }
+      
+          </script>
+        
+{% endblock %}

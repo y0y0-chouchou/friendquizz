@@ -1,0 +1,57 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+
+<hr style="visibility: hidden;">
+<div class="container">
+  <div id="chart_div4" style="height: 500px;"></div>
+        <br/>
+   <div style="margin-top:300px;"></div>
+</div>
+
+        
+
+     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+     <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+          
+          var t = 
+          [['Utilisateurs', 'Nombres de points'],
+          
+          {% for i,user in classementDifference %}
+                      
+             {% if userIdenCour == user.id %}
+                 
+              ['Votre position',  {{ user.points }} ],
+                 
+             {% else %}    
+                 
+                    ['{{ user.lastname }} {{ user.firstname }}',{{ user.points }} ],
+                    
+            {% endif %}
+          
+          
+          {% endfor %}
+      
+          ] ;
+          
+        var data = google.visualization.arrayToDataTable( t );
+
+        var options = {
+          title: 'Classement Différence +2/-2 entre mes amis',
+          hAxis: {title: 'Utilisateurs',  titleTextStyle: {color: 'red'}},
+          vAxis: {title: 'Nombre de points',  titleTextStyle: {color: 'red'}},
+           pointSize: 5
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div4'));
+        chart.draw(data, options);
+      }
+      
+          </script>
+        
+{% endblock %}

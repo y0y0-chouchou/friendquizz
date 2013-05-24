@@ -1,0 +1,19 @@
+
+.titre_quizz{
+	text-align:center; 
+	font-weight:bold;
+}
+
+.image_quizz{
+
+	width: 100px; 
+	height: 100px;
+
+	vertical-align: middle; 
+	margin-right: 15px;
+}
+
+.img_load{
+	width: 200px; 
+	height: 200px;
+}

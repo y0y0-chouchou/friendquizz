@@ -1,0 +1,24 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+<div class="container">
+	<div class="row-fluid well">
+		<div class="span6 offset3">
+			
+<h1>Ajouter un thème</h1>
+        
+<form method="post"  {{ form_enctype(form) }}>
+{{ form_widget(form) }}
+<input type="submit" />
+</form>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+{% endblock %}

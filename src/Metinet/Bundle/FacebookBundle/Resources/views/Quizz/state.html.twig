@@ -1,0 +1,38 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+
+<div class="container">
+	<div class="row-fluid well">
+		<div class="span6 offset3">
+			
+<h1>Activé ou désactivé un quizz</h1>
+        
+
+<ul>
+    {% for quiz in allQuizzs %}
+        
+        {% if (quiz.state) == 0%}
+                <li> <a href="active/{{ quiz.id }}">Activer le quizz {{ quiz.title}}</a> </li>
+        {% elseif (quiz.state) == 1%}
+                <li> <a href="desactive/{{ quiz.id }}">Désactiver le quizz {{ quiz.title}}</a> </li>
+        {% endif %}
+        
+    {% else %}
+        
+        <li> Aucun quizzs !</li>
+        
+    {% endfor %}
+</ul>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+{% endblock %}

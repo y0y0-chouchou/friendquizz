@@ -1,0 +1,18 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+<h1>Inviter vos amis en leur envoyant une invitation</h1>
+ <input type="button"
+      onclick="javascript:sendRequestViaMultiFriendSelector(); return false;"
+      value="Inviter vos amis"
+    />
+ <br/>
+ <a href="invitation/friend">Choisir un ami spécifique</a>
+ <div style="margin-top:700px;"></div>
+
+
+
+        
+{% endblock %}

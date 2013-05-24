@@ -1,0 +1,16 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+
+<h1>Page de détail d'un quizz</h1>
+
+<ul>
+    {% for quiz in quizzs %}
+        <li> <a href="detailquizz/{{ quiz.id }}" >{{ quiz.title }}</a> </li>
+    {% else %}
+        <li> Aucun quizzs !</li>
+    {% endfor %}
+</ul>
+        
+{% endblock %}

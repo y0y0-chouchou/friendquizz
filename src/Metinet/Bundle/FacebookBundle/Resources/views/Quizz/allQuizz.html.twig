@@ -1,0 +1,39 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+<div class="row-fluid">
+	<div class="span12">
+
+	<center><h1>Répondre aux Quizz</h1></center>
+
+	<ul>
+		{% for quizz in quizzs %}
+
+			{% if quizz.state == 0 %}
+				
+				<p>No Quizz</p>
+		
+			{% else %}
+
+				<div class="span3"> 
+					<a class="btn btn-success btn-small" href="{{  path('quizzResultAddDebut', {'id_user': user, 'id_quizz': quizz.id }) }}">{{ quizz.title }}</a>
+				</div>
+
+			{% endif %}
+			
+
+	    {% else %}
+
+        	<li><em>no found</em></li>
+
+	    {% endfor %}
+	</ul>
+		
+
+
+	</div>
+</div>
+
+
+{% endblock %}
